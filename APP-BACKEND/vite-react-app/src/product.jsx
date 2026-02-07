@@ -3,6 +3,7 @@ import {ProductList} from "./products/ProductList.jsx";
  import { ToastContainer, toast } from 'react-toastify';
 import axios from "axios";
 import { useEffect } from "react";
+import Swal from 'sweetalert2/dist/sweetalert2.js'
 export default function Product(){
 let [productlist,setProductlist] = useState([]);
 let [data,setData] = useState({
@@ -32,6 +33,7 @@ const savedData = (e) => {
         category: "",
         price: ""
       });
+      getallproduct();
     })
     .catch((err) => console.log(err));
 }
@@ -88,7 +90,7 @@ useEffect(() => {
         </div>
 
         {/* TABLE */}
-        <ProductList data={productlist} getallproduct={getallproduct} />
+        <ProductList data={productlist} getallproduct={getallproduct} Swal={Swal} />
       </div>
     </div>
   );

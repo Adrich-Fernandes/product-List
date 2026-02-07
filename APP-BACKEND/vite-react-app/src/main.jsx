@@ -4,6 +4,7 @@ import './index.css'
 import 'flowbite/dist/flowbite.css'
 import App from './App.jsx'
 import Product from './product.jsx'
+import 'sweetalert2/src/sweetalert2.scss'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

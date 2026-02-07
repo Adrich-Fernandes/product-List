@@ -2,9 +2,17 @@ import React from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-export function ProductList({ data = [], getallproduct }) {
+export function ProductList({ data = [], getallproduct, Swal }) {
   const deleterow = (delid) => {
-    axios
+    Swal.fire({
+      title: "Do you want to delete this product?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "delete",
+      denyButtonText: `Don't delete`
+    }).then((result) => {
+      if (result.isConfirmed) {
+         axios
       .delete(`http://localhost:7171/web/api/delete/${delid}`)
       .then(() => {
         toast.success("Product deleted successfully!");
@@ -14,11 +22,15 @@ export function ProductList({ data = [], getallproduct }) {
         console.error(err);
         toast.error("Failed to delete product");
       });
+        Swal.fire("Deleted!", "", "success");
+      } else if (result.isDenied) {
+        Swal.fire("Not deleted", "", "info");
+      }
+    });
   };
 
   return (
     <div className="w-full md:basis-[70%] md:flex-none overflow-x-autobg-[#24283b] border border-[#414868] rounded-lg shadow-xl">
-      <ToastContainer />
       <table className="w-full text-sm text-[#c0caf5]">
         <thead className="border-b border-[#414868] text-[#9aa5ce]">
           <tr>
@@ -33,26 +45,26 @@ export function ProductList({ data = [], getallproduct }) {
         </thead>
         <tbody>
           {
-            data.length >= 1?
-            data.map((item,index)=>{
-              return(
-                <tr key={index} className="border-b border-[#414868] hover:bg-[#1f2335]">
-                  <td className="px-4 py-3">{index+1}</td>
-                  <td className="px-4 py-3">{item.name}</td>
-                  <td className="px-4 py-3">{item.color}</td>
-                  <td className="px-4 py-3">{item.category}</td>
-                  <td className="px-4 py-3">${item.price}</td>
-                  <td className="px-4 py-3 text-[#7aa2f7] cursor-pointer hover:underline">
-                    <button className="font-medium bg-[#7aa2f7] text-[#1a1b26] px-3 py-1 rounded">Edit</button></td>
-                  <td className="px-4 py-3 text-[#7aa2f7] cursor-pointer hover:underline">
-                    <button onClick={() => deleterow(item._id)} className="font-medium bg-[#f77a7a] text-[#1a1b26] px-3 py-1 rounded">Delete</button></td>
-                </tr>
-              )
-          })
-          :
-          <tr className="border-b border-[#414868] hover:bg-[#1f2335]">
-            <td className="px-4 py-3 text-center" colSpan={8}>No data found</td>
-          </tr>
+            data.length >= 1 ?
+              data.map((item, index) => {
+                return (
+                  <tr key={index} className="border-b border-[#414868] hover:bg-[#1f2335]">
+                    <td className="px-4 py-3">{index + 1}</td>
+                    <td className="px-4 py-3">{item.name}</td>
+                    <td className="px-4 py-3">{item.color}</td>
+                    <td className="px-4 py-3">{item.category}</td>
+                    <td className="px-4 py-3">${item.price}</td>
+                    <td className="px-4 py-3 text-[#7aa2f7] cursor-pointer hover:underline">
+                      <button className="font-medium bg-[#7aa2f7] text-[#1a1b26] px-3 py-1 rounded">Edit</button></td>
+                    <td className="px-4 py-3 text-[#7aa2f7] cursor-pointer hover:underline">
+                      <button onClick={() => deleterow(item._id)} className="font-medium bg-[#f77a7a] text-[#1a1b26] px-3 py-1 rounded">Delete</button></td>
+                  </tr>
+                )
+              })
+              :
+              <tr className="border-b border-[#414868] hover:bg-[#1f2335]">
+                <td className="px-4 py-3 text-center" colSpan={8}>No data found</td>
+              </tr>
           }
         </tbody>
       </table>
