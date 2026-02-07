@@ -1,8 +1,24 @@
 import React from "react";
-export function ProductList() {
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+export function ProductList({ data = [], getallproduct }) {
+  const deleterow = (delid) => {
+    axios
+      .delete(`http://localhost:7171/web/api/delete/${delid}`)
+      .then(() => {
+        toast.success("Product deleted successfully!");
+        if (typeof getallproduct === "function") getallproduct();
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to delete product");
+      });
+  };
+
   return (
-    <div className="w-full md:basis-[70%] md:flex-none overflow-x-auto
-                    bg-[#24283b] border border-[#414868] rounded-lg shadow-xl">
+    <div className="w-full md:basis-[70%] md:flex-none overflow-x-autobg-[#24283b] border border-[#414868] rounded-lg shadow-xl">
+      <ToastContainer />
       <table className="w-full text-sm text-[#c0caf5]">
         <thead className="border-b border-[#414868] text-[#9aa5ce]">
           <tr>
@@ -16,20 +32,30 @@ export function ProductList() {
           </tr>
         </thead>
         <tbody>
-             {/* <tr class="border-b border-[#414868] hover:bg-[#1f2335]">
-                <td class="px-4 py-3">1</td>
-                <td class="px-4 py-3">MacBook</td>
-                <td class="px-4 py-3">Silver</td>
-                <td class="px-4 py-3">Laptop</td>
-                <td class="px-4 py-3">$2999</td>
-                <td class="px-4 py-3 text-[#7aa2f7] cursor-pointer hover:underline">Edit</td>
-                <td class="px-4 py-3 text-[#7aa2f7] cursor-pointer hover:underline">Delete</td>
-              </tr> */}
+          {
+            data.length >= 1?
+            data.map((item,index)=>{
+              return(
+                <tr key={index} className="border-b border-[#414868] hover:bg-[#1f2335]">
+                  <td className="px-4 py-3">{index+1}</td>
+                  <td className="px-4 py-3">{item.name}</td>
+                  <td className="px-4 py-3">{item.color}</td>
+                  <td className="px-4 py-3">{item.category}</td>
+                  <td className="px-4 py-3">${item.price}</td>
+                  <td className="px-4 py-3 text-[#7aa2f7] cursor-pointer hover:underline">
+                    <button className="font-medium bg-[#7aa2f7] text-[#1a1b26] px-3 py-1 rounded">Edit</button></td>
+                  <td className="px-4 py-3 text-[#7aa2f7] cursor-pointer hover:underline">
+                    <button onClick={() => deleterow(item._id)} className="font-medium bg-[#f77a7a] text-[#1a1b26] px-3 py-1 rounded">Delete</button></td>
+                </tr>
+              )
+          })
+          :
+          <tr className="border-b border-[#414868] hover:bg-[#1f2335]">
+            <td className="px-4 py-3 text-center" colSpan={8}>No data found</td>
+          </tr>
+          }
         </tbody>
       </table>
     </div>
   );
 }
-
-             
-    

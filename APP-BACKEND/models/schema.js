@@ -1,24 +1,23 @@
 var mongoose = require("mongoose");
 
-let user_enq_shcema = mongoose.Schema({
+let product_shcema = mongoose.Schema({
     name:{
         type:String,
         required:true
     },
-    email:{
+    color:{
         type:String,
-        requred:true,
-        unique:true
+        requred:true
     },
-    phone:{
+    category:{
         type:String,
         required:true
     },
-    message:{
-        type:String,
+    price:{
+        type:Number,
         required:true
     }
 });
 
-let enq_model = mongoose.model("enquire",user_enq_shcema);
-module.exports={enq_model};
+let product_model = mongoose.model("product",product_shcema);
+module.exports={product_model};
