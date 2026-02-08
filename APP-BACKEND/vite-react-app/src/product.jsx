@@ -6,14 +6,13 @@ import { useEffect } from "react";
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 export default function Product() {
   let [productlist, setProductlist] = useState([]);
-  let [editId, setEditId] = useState(null);
+  let [editId, setEditId] = useState();
   let [data, setData] = useState({
     name: "",
     color: "",
     category: "",
-    price: ""
+    price: "",
   });
-
 
   const getvalue = (e) => {
     let inputname = e.target.name;
@@ -23,37 +22,37 @@ export default function Product() {
     setData(olddata);
   }
 
-  const savedData = (e) => {
-    e.preventDefault();
-    if (editId) {
-      axios.put(`http://localhost:7171/web/api/update/${editId}`, data)
-        .then((res) => {
-          toast.success("Product updated successfully!");
-          setData({
-            name: "",
-            color: "",
-            category: "",
-            price: ""
-          });
-          setEditId(null);
-          getallproduct();
-        })
-        .catch((err) => console.log(err));
-    } else {
-      axios.post("http://localhost:7171/web/api/insert", data)
-        .then((res) => {
-          toast.success("Product added successfully!");
-          setData({
-            name: "",
-            color: "",
-            category: "",
-            price: ""
-          });
-          getallproduct();
-        })
-        .catch((err) => console.log(err));
-    }
+const savedData = (e) => {
+  e.preventDefault();
+
+  if (editId) {
+    axios.put(`http://localhost:7171/web/api/update/${editId}`, data)
+      .then(() => {
+        toast.success("Product updated successfully!");
+        setEditId(null);
+        setData({
+          name: "",
+          color: "",
+          category: "",
+          price: ""
+        });
+        getallproduct();
+      });
+  } else {
+    axios.post("http://localhost:7171/web/api/insert", data)
+      .then(() => {
+        toast.success("Product added successfully!");
+        setData({
+          name: "",
+          color: "",
+          category: "",
+          price: ""
+        });
+        getallproduct();
+      });
   }
+};
+
 
   let getallproduct = () => {
     axios.get("http://localhost:7171/web/api/show")
@@ -102,13 +101,13 @@ export default function Product() {
             </div>
 
             <button className="w-full bg-[#7aa2f7] text-[#1a1b26] py-2 rounded font-medium hover:bg-[#7dcfff] transition">
-              {editId ? "Update Product" : "Submit"}
+              {editId ? "Update Product" : "Save"}
             </button>
           </form>
         </div>
 
         {/* TABLE */}
-        <ProductList data={productlist} getallproduct={getallproduct} Swal={Swal} setFormData={setData} setEditId={setEditId} />
+        <ProductList data={productlist} getallproduct={getallproduct} Swal={Swal} setFormData={setData} setEditId={setEditId} setData={setData} />
       </div>
     </div>
   );

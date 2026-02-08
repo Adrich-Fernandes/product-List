@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-export function ProductList({ data = [], getallproduct, Swal }) {
+export function ProductList({ data = [], getallproduct, Swal, setData,setEditId }) {
   const deleterow = (delid) => {
     Swal.fire({
       title: "Do you want to delete this product?",
@@ -28,23 +28,25 @@ export function ProductList({ data = [], getallproduct, Swal }) {
       }
     });
   };
-
-
-// the error is here ........................................................................>
-// look in you browser > console > error (Failed to load resource: the server responded with a status of 500 (Internal Server Error)Understand this error)
-
   const editrow = (editid) => {
-    axios.get(`http://localhost:7171/web/api/update/${editid}`)
+    console.log('Edit button clicked, ID:', editid);
+    axios.get(`http://localhost:7171/web/api/get/${editid}`)
       .then((res) => {
-        let data = res.data;
-        console.log(data.product)
-
+        if (res.data && res.data.product) {
+          setData({
+            name: res.data.product.name || '',
+            color: res.data.product.color || '',
+            category: res.data.product.category || '',
+            price: res.data.product.price || '',
+            _id: res.data.product._id || ''
+          });
+          if (typeof setEditId === 'function') setEditId(editid);
+        }
       })
-  };
-// .................................................................................................>
-
-
-
+      .catch((err) => {
+        console.error('Error fetching product:', err);
+      });
+  }
   return (
     <div className="w-full md:basis-[70%] md:flex-none overflow-x-autobg-[#24283b] border border-[#414868] rounded-lg shadow-xl">
       <table className="w-full text-sm text-[#c0caf5]">

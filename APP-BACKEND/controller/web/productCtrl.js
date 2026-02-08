@@ -26,27 +26,23 @@ let delete_product = async (req, res) => {
     res.status(200).json({ status: 200, msg: "sucessful", deleted: del });
 }
 
-let get_single_product = async (req, res) => {
+let getproduct = async (req, res) => {
     let id = req.params.id;
-    let pro = await product_model.findOne({ _id: id });
-    res.status(200).json({ status: 200, msg: "sucessful", product: pro });
+    let product = await product_model.findOne({ _id: id });
+    res.send({status:1,product});
 }
 
 let update_product = async (req, res) => {
     let id = req.params.id;
     let { name, color, category, price } = req.body;
-    let up_data = {
+    let obj = {
         name,
         color,
         category,
         price
-    }
-    let up = await product_model.updateOne({ _id: id }, up_data).then(() => {
-        console.log("updated data");
-    }).catch((err) => {
-        res.status(500).json({ msg: "error !!!", error: err })
-    })
-    res.status(200).json({ status: 200, msg: "sucssful", up_dt: up });
+    };
+    let updated = await product_model.updateOne({ _id: id }, obj);
+    res.send({ status: 200,updated });
 }
 
-module.exports = { insert_product, show_product, delete_product, update_product, get_single_product };
+module.exports = { insert_product, show_product, delete_product, getproduct ,update_product};
